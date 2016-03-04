@@ -20,18 +20,27 @@ function setupPopups() {
 
 
         	// for special events
-        	/*
-        	switch(triggerSelector) {
-			    case n:
-			        code block
-			        break;
-			    case n:
-			        code block
-			        break;
-			    default:
-			        default code block
+        	var specialEvents = div.getAttribute('data-trigger-special-events');
+
+        	if(specialEvents) {
+	        	specialEvents = specialEvents.split(' ');
+	        	for(var i=0; i<specialEvents.length; i++) {
+		        	switch(specialEvents[i]) {
+					    case 'exit-intent':
+					        document.body.addEventListener('mouseout', function(event) {
+							    if (!isInside(event.relatedTarget, document.body)) {
+							      	triggerPopup(div);
+							    }
+							});
+					        break;
+					    case 'other':
+					        // do something
+					        break;
+					    default:
+					        // do nothing
+					}
+				}
 			}
-			*/
         }
     }
 }
@@ -44,19 +53,34 @@ function setupPopupStyle(popupNode) {
 }
 
 function addTriggers(popupNode) {
-	var triggerIds = popupNode.getAttribute('data-trigger-ids').split(' ');
-	var triggerEvents = popupNode.getAttribute('data-trigger-events').split(' ');
+	var triggerIds = popupNode.getAttribute('data-trigger-ids');
+	var triggerEvents = popupNode.getAttribute('data-trigger-events');
+	
+	if(triggerIds && triggerEvents) {
+		var triggerIds = triggerIds.split(' ');
+		var triggerEvents = triggerEvents.split(' ');
 
-	for(var i=0; i<triggerIds.length; i++) {
-		triggerId = triggerIds[i];
-		triggerEvent = triggerEvents[i];
+		if(triggerIds.length === triggerEvents.length) {
 
-		triggerNode = document.getElementById(triggerId);
+			for(var i=0; i<triggerIds.length; i++) {
+				triggerId = triggerIds[i];
+				triggerEvent = triggerEvents[i];
 
-		if(triggerNode) {
-			triggerNode.addEventListener(triggerEvent, function() {
-				triggerPopup(popupNode);
-			});
+				triggerNode = document.getElementById(triggerId);
+
+				if(triggerNode) {
+					triggerNode.addEventListener(triggerEvent, function() {
+						triggerPopup(popupNode);
+					});
+				} else {
+					console.warn('PopupManager: Trigger element of id="'+triggerId+'" not found.');
+				}
+			}
+		} else {
+			console.log(triggerEvents.length);
+			console.log(triggerIds.length);
+
+			throw new Error('PopupManager: You must specify exactly one data-trigger-event for each data-trigger-id (data-trigger-events must have the same length as data-trigger-ids).');
 		}
 	}
 }
@@ -66,26 +90,28 @@ function removeTriggers() {
 }
 
 function triggerPopup(popupNode) {
-	var id = popupNode.getAttribute('id');
-	var triggerLimit = popupNode.getAttribute('data-trigger-limit');
-	var blockPopup;
+	if(popupNode.style.display !== 'block') {
+		var id = popupNode.getAttribute('id');
+		var triggerLimit = popupNode.getAttribute('data-trigger-limit');
+		var blockPopup;
 
-	switch(triggerLimit) {
-	    case 'session':
-	        blockPopup = sessionStorage.getItem('showed-popup-'+id) || false;
-	    	break;
-	    case 'lifetime':
-	        blockPopup = localStorage.getItem('showed-popup-'+id) || false;
-	        break;
-	    default:
-	        blockPopup = false;
-	}
+		switch(triggerLimit) {
+		    case 'session':
+		        blockPopup = sessionStorage.getItem('showed-popup-'+id) || false;
+		    	break;
+		    case 'lifetime':
+		        blockPopup = localStorage.getItem('showed-popup-'+id) || false;
+		        break;
+		    default:
+		        blockPopup = false;
+		}
 
-	if(!blockPopup) {
-		sessionStorage.setItem('showed-popup-'+id, true);
-		localStorage.setItem('showed-popup-'+id, true);
+		if(!blockPopup) {
+			sessionStorage.setItem('showed-popup-'+id, true);
+			localStorage.setItem('showed-popup-'+id, true);
 
-		showPopup(popupNode);
+			showPopup(popupNode);
+		}
 	}
 }
 
@@ -110,13 +136,19 @@ function closePopup(popupNode) {
 }
 
 function setupKillers(popupNode) {
-	var killersIds = popupNode.getAttribute('data-killers-ids').split(' ');
-	for(var i=0; i<killersIds.length; i++) {
-		var killer = document.getElementById(killersIds[i]);
-		if(killer) {
-			killer.addEventListener('click', function() {
-				closePopup(popupNode);
-			});
+	var killersIds = popupNode.getAttribute('data-killers-ids');
+
+	if(killersIds) {
+		killersIds = killersIds.split(' ');
+		for(var i=0; i<killersIds.length; i++) {
+			var killer = document.getElementById(killersIds[i]);
+			if(killer) {
+				killer.addEventListener('click', function() {
+					closePopup(popupNode);
+				});
+			} else {
+				console.warn('PopupManager: Killer element of id="'+killersIds[i]+'" not found.');
+			}
 		}
 	}
 }
@@ -141,26 +173,28 @@ function addCloseBtn(popupNode) {
 }
 
 function addCover(popupNode) {
-	var cover = document.createElement('div');
-	cover.setAttribute('id', popupNode.getAttribute('id')+'-cover');
-	cover.style.display = 'none';
+	var disableCover = popupNode.getAttribute('data-disable-cover');
+	if(disableCover !== 'true') {
+		var cover = document.createElement('div');
+		cover.setAttribute('id', popupNode.getAttribute('id')+'-cover');
+		cover.style.display = 'none';
 
-	addStyleWithId(
-		cover.getAttribute('id'),
-		'{background-color:rgba(0, 0, 0, 0.2);position:fixed;top:0;left:0;width:100%;height:100%;}'
-	);
+		addStyleWithId(
+			cover.getAttribute('id'),
+			'{background-color:rgba(0, 0, 0, 0.2);position:fixed;top:0;left:0;width:100%;height:100%;}'
+		);
 
-	document.body.appendChild(cover);
-	cover.appendChild(popupNode);
+		document.body.appendChild(cover);
+		cover.appendChild(popupNode);
 
-	
-	//Need to work around the issue of clicking inside the popup also closes itself
-	cover.addEventListener('click', function() {
-		if(event.target === cover) {
-			closePopup(popupNode);
-		}
-	});
-	
+		
+		//Need to work around the issue of clicking inside the popup also closes itself
+		cover.addEventListener('click', function() {
+			if(event.target === cover) {
+				closePopup(popupNode);
+			}
+		});
+	}
 }
 
 function addStyleWithId(id, style) {
@@ -179,6 +213,12 @@ function addStyleWithId(id, style) {
 	head.insertBefore(style, fStyle);
 }
 
+function isInside(node, target) {
+	for(; node != null; node = node.parentNode) {
+  		if (node == target) {
+  			return true;
+  		}
+  	}
+}
 
 setupPopups();
-
