@@ -9,6 +9,7 @@ function setupPopups() {
         	
         	
 
+        	setupPopupStyle(div);
         	setupKillers(div);
         	addCloseBtn(div);
         	addCover(div);
@@ -38,7 +39,7 @@ function setupPopups() {
 function setupPopupStyle(popupNode) {
 	addStyleWithId(
 		popupNode.getAttribute('id'),
-		'{position:fixed;left:50%;top:50%;-ms-transform: translate(-50%,-50%);-moz-transform:translate(-50%,-50%);-webkit-transform: translate(-50%,-50%); transform: translate(-50%,-50%);transition:'+popupNode.getAttribute('data-transition')+'ms opacity;}'
+		'{display:none;position:fixed;left:50%;top:50%;-ms-transform: translate(-50%,-50%);-moz-transform:translate(-50%,-50%);-webkit-transform: translate(-50%,-50%); transform: translate(-50%,-50%);}'
 	);
 }
 
@@ -92,29 +93,20 @@ function showPopup(popupNode) {
 	var coverNode = document.getElementById(popupNode.getAttribute('id')+'-cover');
 
 	popupNode.style.display = 'block';
-	popupNode.style.opacity = 1;
 	
 	if(coverNode) {
 		coverNode.style.display = 'block';
-		coverNode.style.opacity = 1;
 	}
 }
 
 function closePopup(popupNode) {
 	var coverNode = document.getElementById(popupNode.getAttribute('id')+'-cover');
-	var transitionTime = popupNode.getAttribute('data-transition') || 1;
 
-	popupNode.style.opacity = 0;
+	popupNode.style.display = 'none';
+	
 	if(coverNode) {
-		coverNode.style.opacity = 0;
+		coverNode.style.display = 'none';
 	}
-
-	setTimeout(function() {
-		popupNode.style.display = 'none';
-		if(coverNode) {
-			coverNode.style.display = 'none';
-		}
-	}, transitionTime);
 }
 
 function setupKillers(popupNode) {
@@ -142,7 +134,7 @@ function addCloseBtn(popupNode) {
     		'{webkit-border-radius:3px;-moz-border-radius:3px;-ms-border-radius:3px;-o-border-radius:3px;border-radius:3px;cursor:default;position:absolute;font-size:22px;font-weight:700;font-family:sans-serif;line-height:31px;height:30px;width:30px;text-align:center;top:3px;right:3px;background:0 0;}'
     	);
 
-		closeBtn.addEventListener('click', function() {
+		closeBtn.addEventListener('click', function(event) {
 			closePopup(popupNode);
 		});
 	}
@@ -152,15 +144,23 @@ function addCover(popupNode) {
 	var cover = document.createElement('div');
 	cover.setAttribute('id', popupNode.getAttribute('id')+'-cover');
 	cover.style.display = 'none';
-	cover.style.opacity = '0';
 
 	addStyleWithId(
 		cover.getAttribute('id'),
-		'{background-color:rgba(0, 0, 0, 0.2);position:fixed;top:0;left:0;width:100%;height:100%;transition:'+popupNode.getAttribute('data-transition')+'ms opacity;}'
+		'{background-color:rgba(0, 0, 0, 0.2);position:fixed;top:0;left:0;width:100%;height:100%;}'
 	);
 
 	document.body.appendChild(cover);
 	cover.appendChild(popupNode);
+
+	
+	//Need to work around the issue of clicking inside the popup also closes itself
+	cover.addEventListener('click', function() {
+		if(event.target === cover) {
+			closePopup(popupNode);
+		}
+	});
+	
 }
 
 function addStyleWithId(id, style) {
