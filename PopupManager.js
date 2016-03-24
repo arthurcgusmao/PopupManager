@@ -22,6 +22,7 @@ function setupPopups() {
         	// for special events
         	var specialEvents = div.getAttribute('data-trigger-special-events');
 
+        	/* In Development
         	if(specialEvents) {
 	        	specialEvents = specialEvents.split(' ');
 	        	for(var i=0; i<specialEvents.length; i++) {
@@ -41,6 +42,7 @@ function setupPopups() {
 					}
 				}
 			}
+			*/
         }
     }
 }
@@ -188,8 +190,8 @@ function addCover(popupNode) {
 		cover.appendChild(popupNode);
 
 		
-		//Need to work around the issue of clicking inside the popup also closes itself
-		cover.addEventListener('click', function() {
+		// Adding event listener to close the popup
+		cover.addEventListener('click', function(event) {
 			if(event.target === cover) {
 				closePopup(popupNode);
 			}
