@@ -222,7 +222,7 @@
 		var css = '#'+id+style;
 		var head = document.head || document.getElementsByTagName('head')[0];
 		var style = document.createElement('style');
-		var fStyle = document.getElementsByTagName('style')[0];
+		var fStyle = head.getElementsByTagName('style')[0];
 
 		style.type = 'text/css';
 		if (style.styleSheet){
@@ -231,7 +231,12 @@
 		  	style.appendChild(document.createTextNode(css));
 		}
 
-		head.insertBefore(style, fStyle);
+		if(fstyle) {
+			head.insertBefore(style, fStyle);	
+		} else {
+			head.appendChild(style);
+		}
+		
 	}
 
 	function isInside(node, target) {
