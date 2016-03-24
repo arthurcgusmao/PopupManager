@@ -27,7 +27,6 @@
 					throw new Error('PopupManager: You must specify an id attribute to the popup!');
 	        	}
 	        	
-
 	        	setupPopupStyle(div);
 	        	setupKillers(div);
 	        	addCloseBtn(div);
@@ -231,7 +230,7 @@
 		  	style.appendChild(document.createTextNode(css));
 		}
 
-		if(fstyle) {
+		if(fStyle) {
 			head.insertBefore(style, fStyle);	
 		} else {
 			head.appendChild(style);
