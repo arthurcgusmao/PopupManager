@@ -29,25 +29,16 @@
 	</style>
 </head>
 <body id="body">
-	<button id="pow">I'm a button.</button>
-
-	<button id="killer2">I'm a killer.</button>
-
+	<button id="btn">I'm a button. Try to click me, without hovering over the text!</button>
+	<span id="txt">I'm a text. Try to Hover me!</span>
 	
-	<div id="popup1" style="display: none;" class="managed-popup" data-trigger-events="mouseenter" data-trigger-ids="pow" data-trigger-limit="" data-killers-ids="killer1 killer2 killer3 killer007" data-disable-close-button="false" data-disable-cover="false">
+	<div id="popup1" style="display: none;" class="managed-popup" data-trigger-events="click mouseenter" data-trigger-ids="btn txt" data-trigger-limit="" data-killers-ids="killer1 killer2" data-disable-close-button="false" data-disable-cover="false">
 		<h1>Oi, eu sou um super popup :)</h1>
 		<p>Btw, sou um popup t&atilde;o bom que posso ser o que eu quiser!</p>
-		<p>Sou um popup High Stakes!!!</p>
+		<p>Sou um popup <em><strong>High Stakes!!!</strong></em></p>
 		<button id="killer1">Close</button>
+		<button id="killer2">Another close</button>
 	</div>
-
-	
-	<div id="popup2" class="managed-popup" data-killers-ids="killer1 killer2 killer3" data-disable-close-button="false" data-disable-cover="false" data-trigger-limit="session" data-trigger-special-events="exit-intent">
-		
-	</div>
-	
-
-	<p>HEY IM HERE!!!!!!!!!!</p>
 
 	<script type="text/javascript" src="PopupManager.js"></script>
 </body>
