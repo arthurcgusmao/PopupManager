@@ -31,6 +31,8 @@
 <body id="body">
 	<button id="btn">I'm a button. Try to click me, without hovering over the text!</button>
 	<span id="txt">I'm a text. Try to Hover me!</span>
+	<br/>
+	<button id="vd-play">I'm a button for a popup with a Temporary Element!</button>
 	
 	<div id="popup1" style="display: none;" class="managed-popup" data-trigger-events="click mouseenter" data-trigger-ids="btn txt" data-trigger-limit="" data-killers-ids="killer1 killer2" data-disable-close-button="false" data-disable-cover="false">
 		<h1>Oi, eu sou um super popup :)</h1>
@@ -39,6 +41,37 @@
 		<button id="killer1">Close</button>
 		<button id="killer2">Another close</button>
 	</div>
+
+
+	<div id="video-popup" style="display: none;" class="managed-popup youtubevideowrap" data-trigger-events="click" data-trigger-ids="vd-play">
+		<p>749283r92874365982736459872345</p>
+		<div id="temp-el-one"></div>
+		<p>sfdahdofiausdofiofuahsdofufhasodf</p>
+	</div>
+	<script type="text/javascript">
+		var video = document.createElement('iframe');
+		video.setAttribute('width', '560');
+		video.setAttribute('height', '315');
+		video.setAttribute('src', 'https://www.youtube.com/embed/hzT_xmR7Z-g?autoplay=1&amp;rel=0&amp;modestbranding=1&amp;showinfo=0');
+		video.setAttribute('frameborder', '0');
+		video.setAttribute('allowfullscreen', 'allowfullscreen');
+
+		var container = document.createElement('div');
+		container.setAttribute('class', 'video-container');
+
+		container.appendChild(video);
+
+		document.getElementById('video-popup').dataOptions = {
+		    temporaryElements: {
+		    	'one': container
+		    }
+		};				
+	</script>
+
+
+
+
+
 
 	<script type="text/javascript" src="popupManager.js" async="async"></script>
 </body>

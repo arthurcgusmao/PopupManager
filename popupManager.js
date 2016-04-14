@@ -146,9 +146,18 @@
 			var temporaryElements = popupNode.dataOptions.temporaryElements;
 		}
 		if(temporaryElements) {
-			for (var prop in temporaryElements) {
-			    if (temporaryElements.hasOwnProperty(prop)) {
-					popupNode.appendChild(temporaryElements[prop]);
+			var container;
+
+			for (var name in temporaryElements) {
+			    if (temporaryElements.hasOwnProperty(name)) {
+			    	container = document.getElementById('temp-el-'+name);
+			    	if(container) {
+						container.appendChild(temporaryElements[name]);
+						console.log('trying to append temporary element within container');
+					} else {
+						popupNode.appendChild(temporaryElements[name]);
+						console.log('trying to append temporary element at popupNode');
+					}
 			    }
 			}
 		}
@@ -165,9 +174,16 @@
 			var temporaryElements = popupNode.dataOptions.temporaryElements;
 		}
 		if(temporaryElements) {
-			for (var prop in temporaryElements) {
-			    if (temporaryElements.hasOwnProperty(prop)) {
-					popupNode.removeChild(temporaryElements[prop]);
+			var container;
+
+			for (var name in temporaryElements) {
+			    if (temporaryElements.hasOwnProperty(name)) {
+			    	container = document.getElementById('temp-el-'+name);
+			    	if(container) {
+						container.removeChild(temporaryElements[name]);
+			    	} else {
+			    		popupNode.removeChild(temporaryElements[name]);
+			    	}
 			    }
 			}
 		}
