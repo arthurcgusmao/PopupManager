@@ -142,7 +142,7 @@ console.log('## popupManager code loaded ##');
 		//popupNode.style.display = 'block';
 		$('#'+popupNode.getAttribute('id')).css('display', 'block');
 		if(coverNode) {
-			coverNode.style = 'display: block;';
+			coverNode.setAttribute('style', 'display: block;');
 		}
 
 		if(popupNode.dataOptions) {
@@ -172,7 +172,7 @@ console.log('## popupManager code loaded ##');
 		$('#'+popupNode.getAttribute('id')).css('display', 'block');
 		if(coverNode) {
 			//coverNode.style.display = 'none';
-			coverNode.style = 'display: none;';
+			coverNode.setAttribute('style', 'display: none;');
 		}
 
 		if(popupNode.dataOptions) {
@@ -236,7 +236,7 @@ console.log('## popupManager code loaded ##');
 		if(disableCover !== 'true') {
 			var cover = document.createElement('div');
 			cover.setAttribute('id', popupNode.getAttribute('id')+'-cover');
-			cover.style = 'display: none;';
+			cover.setAttribute('style', 'display: none;');
 
 			addStyleWithId(
 				cover.getAttribute('id'),
